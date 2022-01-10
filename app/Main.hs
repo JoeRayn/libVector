@@ -24,19 +24,19 @@ v = V.fromList
   Vector a
 (|*|) = fmap . (*)
 
-mag' ::
+mag ::
   (Floating b) =>
   -- |
   Vector b ->
   b
-mag' x = sqrt $ sum $ fmap (^ 2) x
+mag x = sqrt $ sum $ fmap (^ 2) x
 
-norm' ::
+norm ::
   (Floating a) =>
   -- |
   Vector a ->
   Vector a
-norm' x = (1 / mag' x) |*| x
+norm x = (1 / mag x) |*| x
 
 {- calulate the dot product of two vectors -}
 (<.>) ::
@@ -53,7 +53,7 @@ data AngleUnit = Rad | Degrees deriving (Eq, Show)
 angle :: (Eq a, Floating a) => AngleUnit -> Vector a -> Vector a -> a
 angle b x y = if b == Rad then rad else rad * (180 / pi)
   where
-    rad = acos (x <.> y / (mag' x * mag' y))
+    rad = acos (x <.> y / (mag x * mag y))
 
 isZero :: (Ord a, Floating a) => Vector a -> Bool
 isZero x = not $ V.any (< 1.0e-10) x
@@ -69,7 +69,7 @@ isOrthagonal :: (Ord a, Floating a) => Vector a -> Vector a -> Bool
 isOrthagonal x y = abs (x <.> y) < 1.0e-10
 
 projection :: (Floating a) => Vector a -> Vector a -> Vector a
-projection x y = (a <.> y) |*| a where a = norm' x
+projection x y = (a <.> y) |*| a where a = norm x
 
 othagonalComponent :: (Floating a) => Vector a -> Vector a -> Vector a
 othagonalComponent x y = y <-> projection x y
@@ -91,7 +91,7 @@ crossProduct v w =
     z2 = w ! 2
 
 paralleagram :: Floating b => Vector b -> Vector b -> b
-paralleagram x y = mag' $ crossProduct x y
+paralleagram x y = mag $ crossProduct x y
 
 triangle :: Floating a => Vector a -> Vector a -> a
 triangle x y = 0.5 * paralleagram x y
