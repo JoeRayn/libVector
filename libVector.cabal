@@ -29,8 +29,8 @@ executable libVector
     main-is:          Main.hs
 
     -- Modules included in this executable, other than Main.
-    -- other-modules:
-
+    other-modules:    Line
+                      Point
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:    base ^>=4.14.3.0,

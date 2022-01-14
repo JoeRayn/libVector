@@ -2,15 +2,18 @@ module Line where
 
 import Data.Vector
 
-data Line = Line baseVector constantTerm
+data Line a = Line
+  { normalVector :: Vector a,
+    constantTerm :: Double
+  }
 
 -- instance Show Line where
 
-isParallel :: Line -> Line -> Bool
+isParallel :: Line a -> Line a -> Bool
 isParallel = undefined
 
-isEqual Line -> Line -> Bool
+isEqual :: Line a -> Line a -> Bool
 isEqual = undefined
 
-intersection :: Line -> Line -> Either String Vector
+intersection :: Line a -> Line a -> Either String (Vector a)
 intersection = undefined
