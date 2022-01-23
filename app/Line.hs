@@ -18,8 +18,10 @@ isEqual = undefined
 intersection :: Line a -> Line a -> Either String (Vector a)
 intersection = undefined
 
-baseVector :: Line a -> Vector a
-baseVector (Line v c) = a 
+baseVector :: Line a -> Either String (Vector a)
+baseVector (Line v c) = undefined
    where initial_index = findIndex (/= 0) v
-         initial_coefficient = v ! c 
+         initial_coefficient = v ! initial_index
+         
+         
          
