@@ -1,16 +1,20 @@
 module Point where
 
+import Data.Complex (magnitude)
 import Data.Vector as V (Vector, any, fromList, zipWith, (!))
 
 v :: [a] -> Vector a
 v = V.fromList
 
+-- | Add two vectors.
 (<+>) :: Num a => Vector a -> Vector a -> Vector a
 (<+>) = V.zipWith (+)
 
+-- | Subtract two vectors.
 (<->) :: Num a => Vector a -> Vector a -> Vector a
 (<->) = V.zipWith (-)
 
+-- | Multipi vector by a constant.
 (|*|) ::
   Num a =>
   -- |
@@ -20,6 +24,7 @@ v = V.fromList
   Vector a
 (|*|) = fmap . (*)
 
+-- | Calulate if the magnitude of a vector.
 mag ::
   (Floating b) =>
   -- |
@@ -34,26 +39,33 @@ norm ::
   Vector a
 norm x = (1 / mag x) |*| x
 
-{- calulate the dot product of two vectors -}
+-- | Calulate the dot product of two vectors.
 (<.>) ::
   Floating a =>
-  -- | First vector
   Vector a ->
-  -- | Second vector
   Vector a ->
   a
 (<.>) x y = sum $ V.zipWith (*) x y
 
 data AngleUnit = Rad | Degrees deriving (Eq, Show)
 
-angle :: (Eq a, Floating a) => AngleUnit -> Vector a -> Vector a -> a
+-- | Calulate the angle between two vectors
+angle ::
+  (Eq a, Floating a) =>
+  -- |  Rad or Degrees
+  AngleUnit ->
+  Vector a ->
+  Vector a ->
+  a
 angle b x y = if b == Rad then rad else rad * (180 / pi)
   where
     rad = acos (x <.> y / (mag x * mag y))
 
+-- | Calulate if a vector is zero to some tolerance.
 isZero :: (Ord a, Floating a) => Vector a -> Bool
 isZero x = not $ V.any (< 1.0e-10) x
 
+-- | Calulate if a two vectors are parallel to some tolerance.
 isParallel :: (Eq a, Ord a, Floating a) => Vector a -> Vector a -> Bool
 isParallel x y
   | isZero x || isZero y = True
@@ -61,6 +73,7 @@ isParallel x y
   where
     a = angle Rad x y
 
+-- | Calulate if two vetors are orthagonal to some tolerance
 isOrthagonal :: (Ord a, Floating a) => Vector a -> Vector a -> Bool
 isOrthagonal x y = abs (x <.> y) < 1.0e-10
 

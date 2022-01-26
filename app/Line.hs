@@ -1,6 +1,6 @@
 module Line where
 
-import Data.Vector
+import Data.Vector ( (!), findIndex, Vector )
 
 data Line a = Line
   { normalVector :: Vector a, -- a normal vector is orthagonal vector to the line
