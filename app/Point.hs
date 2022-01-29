@@ -32,6 +32,7 @@ mag ::
   b
 mag x = sqrt $ sum $ fmap (^ 2) x
 
+-- | Normalise vector
 norm ::
   (Floating a) =>
   -- |
