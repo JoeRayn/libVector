@@ -25,9 +25,21 @@ isEqual = undefined
 intersection :: Line a -> Line a -> Either String (Vector a)
 intersection = undefined
 
+-- this is mostly error handleing code for if the lines normal vector is zero
+-- i.e. its not a line. Does not seem very elagent to me. 
+-- | Calculate the a base vector for a line
 baseVector :: (Num a, Eq a) => Line a -> Either String (Vector a)
 baseVector (Line v c) = case initialIndex of
   Nothing -> Left "Zero vector can not be a normal vector for a line"
   (Just index) -> let initialCoefficient = v V.! index in Right $ V.fromList (replicate index 0 ++ [initialCoefficient] ++ replicate (length v - (index + 1)) 0)
   where
     initialIndex = V.findIndex (/= 0) v
+
+-- alternative implementation of baseVector in the maybe monad
+baseVector' :: (Num a, Eq a) => Line a -> Maybe (Vector a)
+baseVector' (Line v c) = do
+  V.findIndex (/= 0)
+   
+  -- (Just index) -> let initialCoefficient = v V.! index in Just $ V.fromList (replicate index 0 ++ [initialCoefficient] ++ replicate (length v - (index + 1)) 0)
+  -- where
+  --   initialIndex = 
