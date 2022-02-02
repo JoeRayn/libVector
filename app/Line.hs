@@ -1,7 +1,8 @@
 module Line where
 
+import Control.Monad
 import Data.List
-import Data.Vector as V (Vector, findIndex, fromList, (!))
+import Data.Vector as V (Vector, findIndex, fromList, (!), (!?))
 import GHC.Base (undefined)
 
 -- ToDo replace zero checks with close to zero within some tolerance
@@ -26,7 +27,8 @@ intersection :: Line a -> Line a -> Either String (Vector a)
 intersection = undefined
 
 -- this is mostly error handleing code for if the lines normal vector is zero
--- i.e. its not a line. Does not seem very elagent to me. 
+-- i.e. its not a line. Does not seem very elagent to me.
+
 -- | Calculate the a base vector for a line
 baseVector :: (Num a, Eq a) => Line a -> Either String (Vector a)
 baseVector (Line v c) = case initialIndex of
@@ -38,8 +40,19 @@ baseVector (Line v c) = case initialIndex of
 -- alternative implementation of baseVector in the maybe monad
 baseVector' :: (Num a, Eq a) => Line a -> Maybe (Vector a)
 baseVector' (Line v c) = do
-  V.findIndex (/= 0)
-   
-  -- (Just index) -> let initialCoefficient = v V.! index in Just $ V.fromList (replicate index 0 ++ [initialCoefficient] ++ replicate (length v - (index + 1)) 0)
-  -- where
-  --   initialIndex = 
+  initialIndex <- V.findIndex (/= 0) v
+  initialCoefficient <- v V.!? initialIndex
+  let head = replicate initialIndex 0
+  let tail = replicate (length v - initialIndex + 1) 0
+  return (V.fromList (head ++ [initialCoefficient] ++ tail))
+
+-- initialCoefficient >>= \x -> Just $ V.fromList (head +++ tail)
+-- where initialIndex = V.findIndex (/= 0) v
+--       initialCoefficient = initialIndex >>= (v V.!?)
+--       head =  fmap (0 `replicate`) initialIndex
+--       tail =  fmap (\x -> replicate (length v - (x + 1)) 0) initialIndex
+--       (+++) = liftM (++)
+
+-- (Just index) -> let initialCoefficient = v V.! index in Just $ V.fromList (replicate index 0 ++ [initialCoefficient] ++ replicate (length v - (index + 1)) 0)
+-- where
+--   initialIndex =
