@@ -46,11 +46,16 @@ baseVector' (Line v c) = do
   let tail = replicate (length v - initialIndex + 1) 0
   return (V.fromList (head ++ [initialCoefficient] ++ tail))
 
--- initialCoefficient >>= \x -> Just $ V.fromList (head +++ tail)
--- where initialIndex = V.findIndex (/= 0) v
---       initialCoefficient = initialIndex >>= (v V.!?)
---       head =  fmap (0 `replicate`) initialIndex
---       tail =  fmap (\x -> replicate (length v - (x + 1)) 0) initialIndex
+baseVector'' :: (Num a, Eq a) => Line a -> Maybe (Vector a)
+baseVector'' (Line v c) = return undefined
+  where initialIndex' :: (Num a, Eq a) => Vector a -> Maybe Int
+        initialIndex' = V.findIndex (/= 0)
+        initialCoefficient' = initialIndex' >=> (v !?)
+        baseHead :: Vector Integer -> Maybe [Int]
+        baseHead = fmap (0 `replicate`) . initialIndex'
+        baseTail i = 0 `replicate` (length v - i+1)
+
+
 --       (+++) = liftM (++)
 
 -- (Just index) -> let initialCoefficient = v V.! index in Just $ V.fromList (replicate index 0 ++ [initialCoefficient] ++ replicate (length v - (index + 1)) 0)
