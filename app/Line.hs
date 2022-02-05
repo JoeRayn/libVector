@@ -30,34 +30,13 @@ intersection = undefined
 -- i.e. its not a line. Does not seem very elagent to me.
 
 -- | Calculate the a base vector for a line
-baseVector :: (Num a, Eq a) => Line a -> Either String (Vector a)
-baseVector (Line v c) = case initialIndex of
-  Nothing -> Left "Zero vector can not be a normal vector for a line"
-  (Just index) -> let initialCoefficient = v V.! index in Right $ V.fromList (replicate index 0 ++ [initialCoefficient] ++ replicate (length v - (index + 1)) 0)
-  where
-    initialIndex = V.findIndex (/= 0) v
-
--- alternative implementation of baseVector in the maybe monad
-baseVector' :: (Num a, Eq a) => Line a -> Maybe (Vector a)
+baseVector' :: Line Double -> Either String (Vector Double)
 baseVector' (Line v c) = do
-  initialIndex <- V.findIndex (/= 0) v
-  initialCoefficient <- v V.!? initialIndex
+  initialIndex <- maybeToEither "Zero vector can not be a normal vector for a line" (V.findIndex (/= 0) v)
+  initialCoefficient <- maybeToEither "Index not found" (v V.!? initialIndex)
   let head = replicate initialIndex 0
   let tail = replicate (length v - initialIndex + 1) 0
-  return (V.fromList (head ++ [initialCoefficient] ++ tail))
+  return (V.fromList (head ++ [c / initialCoefficient] ++ tail))
 
-baseVector'' :: (Num a, Eq a) => Line a -> Maybe (Vector a)
-baseVector'' (Line v c) = return undefined
-  where initialIndex' :: (Num a, Eq a) => Vector a -> Maybe Int
-        initialIndex' = V.findIndex (/= 0)
-        initialCoefficient' = initialIndex' >=> (v !?)
-        baseHead :: Vector Integer -> Maybe [Int]
-        baseHead = fmap (0 `replicate`) . initialIndex'
-        baseTail i = 0 `replicate` (length v - i+1)
-
-
---       (+++) = liftM (++)
-
--- (Just index) -> let initialCoefficient = v V.! index in Just $ V.fromList (replicate index 0 ++ [initialCoefficient] ++ replicate (length v - (index + 1)) 0)
--- where
---   initialIndex =
+maybeToEither :: a -> Maybe b -> Either a b
+maybeToEither = (`maybe` Right) . Left
