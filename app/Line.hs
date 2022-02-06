@@ -9,13 +9,13 @@ import GHC.Base (undefined)
 
 data Line a = Line
   { normalVector :: Vector a, -- a normal vector is orthagonal vector to the line
-    constantTerm :: Double
-  }
+    constantTerm :: a}
 
 -- | Construct a line with the standard formular, if a zero vector is supplied as the normal vector then the line would just be a point so return Nothing.
 line normalVector constantTerm = if any (> 0) normalVector then Just $ Line normalVector constantTerm else Nothing
 
--- instance Show Line where
+instance Show a => Show (Line a) where
+  show x = ""
 
 isParallel :: Line a -> Line a -> Bool
 isParallel = undefined
@@ -30,7 +30,7 @@ intersection = undefined
 -- i.e. its not a line. Does not seem very elagent to me.
 
 -- | Calculate the a base vector for a line
-baseVector' :: Line Double -> Either String (Vector Double)
+baseVector' :: (Floating a, Eq a) => Line a -> Either String (Vector a)
 baseVector' (Line v c) = do
   initialIndex <- maybeToEither "Zero vector can not be a normal vector for a line" (V.findIndex (/= 0) v)
   initialCoefficient <- maybeToEither "Index not found" (v V.!? initialIndex)
