@@ -15,7 +15,7 @@ data Line a = Line
 line normalVector constantTerm = if any (> 0) normalVector then Just $ Line normalVector constantTerm else Nothing
 
 instance Show a => Show (Line a) where
-  show x = ""
+  show (Line v c) = show v ++ " " ++ show c
 
 isParallel :: Line a -> Line a -> Bool
 isParallel = undefined
