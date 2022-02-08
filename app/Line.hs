@@ -38,5 +38,6 @@ baseVector' (Line v c) = do
   let tail = replicate (length v - initialIndex + 1) 0
   return (V.fromList (head ++ [c / initialCoefficient] ++ tail))
 
+-- | Convert Maybe to Either
 maybeToEither :: a -> Maybe b -> Either a b
 maybeToEither = (`maybe` Right) . Left
