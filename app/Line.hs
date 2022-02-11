@@ -2,17 +2,19 @@ module Line where
 
 import Control.Monad
 import Data.List
-import Data.Vector as V (Vector, findIndex, fromList, (!), (!?))
+import Data.Vector (Vector)
+import qualified Data.Vector as V (cons, empty, findIndex, foldr, fromList, replicate, singleton, (!), (!?), (++))
 import GHC.Base (undefined)
 
 -- ToDo replace zero checks with close to zero within some tolerance
 
 data Line a = Line
   { normalVector :: Vector a, -- a normal vector is orthagonal vector to the line
-    constantTerm :: a}
+    constantTerm :: a
+  }
 
 -- | Construct a line with the standard formular, if a zero vector is supplied as the normal vector then the line would just be a point so return Nothing.
-line normalVector constantTerm = if any (> 0) normalVector then Just $ Line normalVector constantTerm else Nothing
+line normalVector constantTerm = if any (/= 0) normalVector then Just $ Line normalVector constantTerm else Nothing
 
 instance Show a => Show (Line a) where
   show (Line v c) = show v ++ " " ++ show c
@@ -30,14 +32,33 @@ intersection = undefined
 -- i.e. its not a line. Does not seem very elagent to me.
 
 -- | Calculate the a base vector for a line
-baseVector' :: (Floating a, Eq a) => Line a -> Either String (Vector a)
-baseVector' (Line v c) = do
+baseVector :: (Floating a, Eq a) => Line a -> Either String (Vector a)
+baseVector (Line v c) = do
   initialIndex <- maybeToEither "Zero vector can not be a normal vector for a line" (V.findIndex (/= 0) v)
   initialCoefficient <- maybeToEither "Index not found" (v V.!? initialIndex)
-  let head = replicate initialIndex 0
-  let tail = replicate (length v - initialIndex + 1) 0
-  return (V.fromList (head ++ [c / initialCoefficient] ++ tail))
+  let head = V.replicate initialIndex 0
+  let tail = V.replicate (length v - initialIndex + 1) 0
+  return (head V.++ V.singleton (c / initialCoefficient) V.++ tail)
+
+
+-- | Alternative implementation of basevector using fold
+baseVector' :: (Eq a, Floating a) => Line a -> Either String (Vector a)
+baseVector' l | any (/= 0) bv = Right bv
+              | otherwise = Left "Zero vector can not be a normal vector for a line" 
+    where bv = baseVectorPossiblyZero l
+
+baseVectorPossiblyZero :: (Eq a, Floating a) => Line a -> Vector a
+baseVectorPossiblyZero (Line v c) = V.foldr dimention V.empty v
+  where
+    dimention a as =
+      if a == 0
+        then V.cons 0 as
+        else V.cons (c / a) (V.replicate (length as) 0)
 
 -- | Convert Maybe to Either
 maybeToEither :: a -> Maybe b -> Either a b
 maybeToEither = (`maybe` Right) . Left
+
+rfold :: (a -> b -> b) -> b -> [a] -> b
+rfold _ init [] = init
+rfold f init (a : as) = f a (rfold f init as)
