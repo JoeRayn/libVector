@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveAnyClass #-}
 module Line where
 
 import Control.Monad
@@ -5,6 +6,7 @@ import Data.List
 import Data.Vector (Vector)
 import qualified Data.Vector as V (cons, empty, findIndex, foldr, fromList, replicate, singleton, (!), (!?), (++))
 import GHC.Base (undefined)
+import Test.QuickCheck
 
 -- ToDo replace zero checks with close to zero within some tolerance
 
@@ -47,6 +49,7 @@ baseVector' l | any (/= 0) bv = Right bv
               | otherwise = Left "Zero vector can not be a normal vector for a line" 
     where bv = baseVectorPossiblyZero l
 
+-- | Calculate the base vector for a line, if the line. Does not check that the line is well formed. Not sure if the cons prepend operator (cons) is effecient on arrays.
 baseVectorPossiblyZero :: (Eq a, Floating a) => Line a -> Vector a
 baseVectorPossiblyZero (Line v c) = V.foldr dimention V.empty v
   where
@@ -62,3 +65,7 @@ maybeToEither = (`maybe` Right) . Left
 rfold :: (a -> b -> b) -> b -> [a] -> b
 rfold _ init [] = init
 rfold f init (a : as) = f a (rfold f init as)
+
+
+prop_baseVector :: Line Double -> Bool
+prop_baseVector x = baseVector x == baseVector' x
