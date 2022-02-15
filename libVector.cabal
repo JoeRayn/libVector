@@ -2,6 +2,10 @@ cabal-version:      2.4
 name:               libVector
 version:            0.1.0.0
 
+Test-Suite testLibVector
+  type: exitcode-stdio-1.0
+  build-depends: QuickCheck
+  hs-source-dirs: src
 -- A short (one-line) description of the package.
 -- synopsis:
 
