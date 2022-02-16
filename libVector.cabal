@@ -3,9 +3,15 @@ name:               libVector
 version:            0.1.0.0
 
 Test-Suite testLibVector
-  type: exitcode-stdio-1.0
-  build-depends: QuickCheck
-  hs-source-dirs: src
+  type:
+    exitcode-stdio-1.0
+  hs-source-dirs:
+    app
+  main-is:
+    Test.hs
+  build-depends:
+      base >= 4 && < 5
+    , tasty >= 1.4
 -- A short (one-line) description of the package.
 -- synopsis:
 
