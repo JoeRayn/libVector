@@ -8,10 +8,13 @@ Test-Suite testLibVector
   hs-source-dirs:
     app
   main-is:
-    Test.hs
+    Tests.hs
   build-depends:
       base >= 4 && < 5
-    , tasty >= 1.4
+    , vector ^>=0.12
+    , tasty ^>= 1.4
+    , QuickCheck ^>= 2.14
+    , tasty-quickcheck
 -- A short (one-line) description of the package.
 -- synopsis:
 
@@ -41,10 +44,13 @@ executable libVector
     -- Modules included in this executable, other than Main.
     other-modules:    Line
                       Point
+                      Test
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:    base ^>=4.14.3.0,
                       vector ^>=0.12,
-                      QuickCheck ^>=2.14
+                      QuickCheck ^>= 2.14,
+                      tasty-quickcheck,
+                      tasty ^>= 1.4
     hs-source-dirs:   app
     default-language: Haskell2010
