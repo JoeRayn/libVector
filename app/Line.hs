@@ -73,6 +73,8 @@ maybeToEither = (`maybe` Right) . Left
 prop_baseVector :: Line Double -> Bool
 prop_baseVector x = baseVector x == baseVector' x
 
-prop_baseVector_orthagornal_to_normal_vector x = (not $ isZero $ normalVector x) ==> isOrthagonal (baseVectorPossiblyZero x) (normalVector x)
+prop_baseVector_orthagornal_to_normal_vector :: Line Double -> Bool 
+prop_baseVector_orthagornal_to_normal_vector x = isOrthagonal (baseVectorPossiblyZero x) (normalVector x)
+-- (not $ isZero $ normalVector x) ==>
 
-tests = [QC.testProperty "baseVector_model" prop_baseVector]-- , QC.testProperty "normal vector is orthagonal to base vector" prop_baseVector_orthagornal_to_normal_vector]
+tests = [QC.testProperty "baseVector_model" prop_baseVector, QC.testProperty "normal vector is orthagonal to base vector" prop_baseVector_orthagornal_to_normal_vector]
