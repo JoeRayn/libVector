@@ -17,17 +17,13 @@ data Line a = Line
     constantTerm :: a
   }
 
-instance (Arbitrary a) => Arbitrary (Line a) where
-  arbitrary = do
-    x <- arbitrary
-    z <- arbitrary
-    Line (V.fromList [x, z]) <$> arbitrary
-
 -- | Construct a line with the standard formular, if a zero vector is supplied as the normal vector then the line would just be a point so return Nothing.
 line :: (Eq a, Num a) => Vector a -> a -> Maybe (Line a)
 line normalVector constantTerm = if any (/= 0) normalVector then Just $ Line normalVector constantTerm else Nothing
 
-lineFromList x = line (V.fromList x)
+maybeLineFromList x = line (V.fromList x)
+
+lineFromList x = Line (V.fromList x)
 
 instance Show a => Show (Line a) where
   show (Line v c) = show v ++ " " ++ show c
@@ -73,6 +69,16 @@ baseVectorPossiblyZero (Line v c) = V.foldr dimention V.empty v
 -- | Convert Maybe to Either
 maybeToEither :: a -> Maybe b -> Either a b
 maybeToEither = (`maybe` Right) . Left
+
+instance (Arbitrary a, Num a) => Arbitrary (Line a) where
+  arbitrary = do
+    n <- choose (0, 2) :: Gen Int
+    x <- arbitrary
+    z <- arbitrary
+    case n of
+      0 -> lineFromList [0, x] <$> arbitrary
+      1 -> lineFromList [x, 0] <$> arbitrary
+      2 -> lineFromList [x, z] <$> arbitrary
 
 prop_baseVector :: Line Double -> Bool
 prop_baseVector x = baseVector x == baseVector' x

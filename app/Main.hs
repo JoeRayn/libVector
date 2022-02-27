@@ -5,4 +5,4 @@ import Line
 
 main :: IO ()
 main =
-  print $ liftM2 isParallel (lineFromList [1.0, 1.0] 1.0) $ lineFromList [1.0, 2.0] 1.0
+  print $ liftM2 isParallel (maybeLineFromList [1.0, 1.0] 1.0) $ maybeLineFromList [1.0, 2.0] 1.0

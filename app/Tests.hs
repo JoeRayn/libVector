@@ -9,7 +9,7 @@ main = defaultMain tests
 tests :: TestTree
 tests = testGroup "Tests" [qcProps]
 
-qcProps =
+qcProps = localOption (QuickCheckVerbose True) $
   testGroup
     "(checked by QuickCheck)"
     Line.tests
